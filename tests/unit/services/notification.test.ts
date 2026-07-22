@@ -42,8 +42,8 @@ jest.mock('../../../src/utils/config', () => ({
   },
 }));
 
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const { prisma: mockPrisma } = require('../../../src/db/client');
+import { prisma } from '../../../src/db/client';
+const mockPrisma = prisma as any;
 
 
 // Mock global fetch
