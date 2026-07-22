@@ -7,9 +7,9 @@
  * Validates: Requirements 8.1, 8.2, 8.3, 8.4, 8.5, 8.6, 8.7
  */
 
-import prisma from '../db/client';
-import { config } from '../utils/config';
-import { ValidationError } from '../utils/errors';
+import prisma from '../db/client.js';
+import { config } from '../utils/config.js';
+import { ValidationError } from '../utils/errors.js';
 
 // ─── Interfaces ──────────────────────────────────────────────────────────────
 
@@ -106,7 +106,7 @@ export class MetricsService {
       take: limit,
     });
 
-    return results.map((r) => ({
+    return results.map((r: { testName: string; _count: { id: number } }) => ({
       testName: r.testName,
       failureCount: r._count.id,
     }));

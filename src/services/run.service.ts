@@ -6,10 +6,10 @@
  * Validates: Requirements 2.1, 2.3, 2.4, 2.7, 4.3
  */
 
-import { prisma } from '../db/client';
-import { config } from '../utils/config';
-import { NotFoundError, QueueCapacityError } from '../utils/errors';
-import type { PaginatedResult, RunStatus } from '../utils/types';
+import { prisma } from '../db/client.js';
+import { config } from '../utils/config.js';
+import { NotFoundError, QueueCapacityError } from '../utils/errors.js';
+import type { PaginatedResult, RunStatus } from '../utils/types.js';
 import type { TestRun } from '@prisma/client';
 
 export interface RunFilters {

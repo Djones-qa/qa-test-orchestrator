@@ -6,7 +6,7 @@
  * Validates: Requirements 9.2, 9.3, 9.4, 9.7, 9.9
  */
 
-import { FieldError } from './types';
+import { FieldError } from './types.js';
 
 // Re-export FieldError for consumers that import from this module
 export type { FieldError };

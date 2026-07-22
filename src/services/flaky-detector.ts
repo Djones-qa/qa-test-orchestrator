@@ -9,8 +9,8 @@
  * Validates: Requirements 3.1, 3.2, 3.3, 3.4, 3.5, 3.6
  */
 
-import { prisma } from '../db/client';
-import { PaginatedResult } from '../utils/types';
+import { prisma } from '../db/client.js';
+import { PaginatedResult } from '../utils/types.js';
 
 // --- Interfaces ---
 
@@ -160,7 +160,7 @@ export class FlakyDetectorService {
       queryOptions.skip = 1; // Skip the cursor item itself
     }
 
-    const entries = await prisma.flakyTestEntry.findMany(queryOptions);
+    const entries: Array<{id: string; testName: string; suiteId: string; score: number; isFlaky: boolean; lastUpdated: Date}> = await prisma.flakyTestEntry.findMany(queryOptions);
 
     const hasNextPage = entries.length > take;
     const items = entries.slice(0, take);

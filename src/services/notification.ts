@@ -8,10 +8,10 @@
  * Validates: Requirements 7.1, 7.2, 7.3, 7.4, 7.5, 7.6, 7.7
  */
 
-import { prisma } from '../db/client';
-import { config } from '../utils/config';
-import { NotFoundError, ValidationError } from '../utils/errors';
-import type { ChannelType, NotificationEvent, PaginatedResult } from '../utils/types';
+import { prisma } from '../db/client.js';
+import { config } from '../utils/config.js';
+import { NotFoundError, ValidationError } from '../utils/errors.js';
+import type { ChannelType, NotificationEvent, PaginatedResult } from '../utils/types.js';
 
 // ─── Interfaces ──────────────────────────────────────────────────────────────
 
@@ -218,9 +218,7 @@ export class NotificationService {
     channelId: string,
     cursor?: string,
     pageSize: number = 20,
-  ): Promise<PaginatedResult<typeof deliveries[number]>> {
-    type deliveries = Awaited<ReturnType<typeof prisma.notificationDelivery.findMany>>;
-
+  ): Promise<PaginatedResult<unknown>> {
     const effectivePageSize = Math.min(Math.max(pageSize, 1), 100);
 
     const [totalCount, deliveries] = await Promise.all([
@@ -413,7 +411,7 @@ export class NotificationService {
       },
     });
 
-    const deliveryPromises = channels.map((channel) =>
+    const deliveryPromises = channels.map((channel: { id: string }) =>
       this.sendNotification(channel.id, payload).catch(() => {
         // Individual delivery failures are recorded in the delivery table;
         // we don't want one channel failure to prevent others from receiving.

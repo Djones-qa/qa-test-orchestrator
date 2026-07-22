@@ -5,9 +5,9 @@
  * Validates: Requirements 1.1, 1.2, 1.3, 1.4, 1.5, 1.6
  */
 
-import { prisma } from '../db/client';
-import { ConflictError, NotFoundError, ValidationError } from '../utils/errors';
-import type { FieldError, PaginatedResult } from '../utils/types';
+import { prisma } from '../db/client.js';
+import { ConflictError, NotFoundError, ValidationError } from '../utils/errors.js';
+import type { FieldError, PaginatedResult } from '../utils/types.js';
 
 // --- Input types ---
 
