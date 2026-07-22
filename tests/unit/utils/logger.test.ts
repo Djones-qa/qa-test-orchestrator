@@ -1,4 +1,4 @@
-import { logger, Logger, LogLevel } from '../../../src/utils/logger.js';
+import { logger, Logger } from '../../../src/utils/logger.js';
 
 describe('Logger', () => {
   let stdoutSpy: jest.SpyInstance;

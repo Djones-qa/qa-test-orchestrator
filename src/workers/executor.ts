@@ -98,16 +98,14 @@ export function createExecutionQueue(redisUrl: string): Queue<ExecutorJobData> {
  * the appropriate CLI (jest, playwright, cypress).
  */
 async function executeTestFramework(
-  framework: string,
+  _framework: string,
   _sourcePath: string,
   _job: Job<ExecutorJobData>,
 ): Promise<void> {
-  // Framework command mapping (for reference)
-  const _commands: Record<string, string> = {
-    jest: 'npx jest',
-    playwright: 'npx playwright test',
-    cypress: 'npx cypress run',
-  };
+  // Framework command mapping (for reference):
+  // jest: 'npx jest'
+  // playwright: 'npx playwright test'
+  // cypress: 'npx cypress run'
 
   // In a real implementation, we'd spawn a child process:
   // const { execSync } = require('child_process');

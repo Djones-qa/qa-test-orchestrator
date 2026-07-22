@@ -68,7 +68,7 @@ export class FlakyDetectorService {
   async processResult(
     testName: string,
     suiteId: string,
-    status: 'passed' | 'failed',
+    _status: 'passed' | 'failed',
   ): Promise<FlakyTransition | null> {
     // Compute the new flakiness score
     const score = await this.computeFlakinessScore(testName, suiteId);

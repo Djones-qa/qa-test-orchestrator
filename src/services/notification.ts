@@ -84,7 +84,7 @@ export class NotificationService {
    */
   async validateAndTestChannel(
     url: string,
-    type: ChannelType,
+    _type: ChannelType,
   ): Promise<ValidationResult> {
     const urlValidation = this.validateUrl(url);
     if (!urlValidation.valid) {
