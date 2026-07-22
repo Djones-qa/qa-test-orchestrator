@@ -7,14 +7,17 @@ const config: Config = {
   testMatch: ['**/*.test.ts', '**/*.spec.ts'],
   transform: {
     '^.+\\.ts$': ['ts-jest', {
-      useESM: true,
       tsconfig: {
-        module: 'NodeNext',
-        moduleResolution: 'NodeNext',
+        module: 'ESNext',
+        moduleResolution: 'bundler',
+        isolatedModules: true,
+        esModuleInterop: true,
+        strict: true,
+        target: 'ES2022',
+        types: ['jest', 'node'],
       },
     }],
   },
-  extensionsToTreatAsEsm: ['.ts'],
   moduleNameMapper: {
     '^(\\.{1,2}/.*)\\.js$': '$1',
   },
