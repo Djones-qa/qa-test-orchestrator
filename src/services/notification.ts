@@ -146,7 +146,7 @@ export class NotificationService {
       data: {
         channelId,
         event: payload.event,
-        payload: payload as unknown as Record<string, unknown>,
+        payload: JSON.parse(JSON.stringify(payload)),
         status: 'pending',
         attempts: 0,
       },
