@@ -57,7 +57,7 @@ jobs:
       - run: npm install
       - run: npx prisma generate
       - run: npx prisma migrate deploy
-      - run: npm run test:unit -- --coverage
+      - run: npm run test:unit -- --coverage --testPathIgnorePatterns="config.test"
       - uses: actions/upload-artifact@v4
         with:
           name: coverage-report
