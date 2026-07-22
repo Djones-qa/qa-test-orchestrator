@@ -10,32 +10,30 @@ import { ValidationError, NotFoundError } from '../../../src/utils/errors';
 
 // ─── Mocks ───────────────────────────────────────────────────────────────────
 
-const mockPrisma = {
-  notificationChannel: {
-    create: jest.fn(),
-    findUnique: jest.fn(),
-    findMany: jest.fn(),
-  },
-  notificationDelivery: {
-    create: jest.fn(),
-    update: jest.fn(),
-    findMany: jest.fn(),
-    count: jest.fn(),
-  },
-  testSuite: {
-    findUnique: jest.fn(),
-    findFirst: jest.fn(),
-  },
-  testResult: {
-    findMany: jest.fn(),
-  },
-  executionSchedule: {
-    findUnique: jest.fn(),
-  },
-};
-
 jest.mock('../../../src/db/client', () => ({
-  prisma: mockPrisma,
+  prisma: {
+    notificationChannel: {
+      create: jest.fn(),
+      findUnique: jest.fn(),
+      findMany: jest.fn(),
+    },
+    notificationDelivery: {
+      create: jest.fn(),
+      update: jest.fn(),
+      findMany: jest.fn(),
+      count: jest.fn(),
+    },
+    testSuite: {
+      findUnique: jest.fn(),
+      findFirst: jest.fn(),
+    },
+    testResult: {
+      findMany: jest.fn(),
+    },
+    executionSchedule: {
+      findUnique: jest.fn(),
+    },
+  },
 }));
 
 jest.mock('../../../src/utils/config', () => ({
@@ -43,6 +41,10 @@ jest.mock('../../../src/utils/config', () => ({
     passRateThreshold: 80,
   },
 }));
+
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const { prisma: mockPrisma } = require('../../../src/db/client');
+
 
 // Mock global fetch
 const mockFetch = jest.fn();
