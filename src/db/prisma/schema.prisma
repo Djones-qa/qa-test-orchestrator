@@ -1,0 +1,193 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// ─── Enums ───────────────────────────────────────────────────────────────────
+
+enum Framework {
+  jest
+  playwright
+  cypress
+}
+
+enum RunStatus {
+  queued
+  running
+  completed
+  failed
+}
+
+enum TestStatus {
+  passed
+  failed
+  skipped
+}
+
+enum ScheduleType {
+  cron
+  event
+}
+
+enum ChannelType {
+  slack
+  webhook
+}
+
+enum DeliveryStatus {
+  pending
+  delivered
+  failed
+}
+
+// ─── Models ──────────────────────────────────────────────────────────────────
+
+model TestSuite {
+  id         String    @id @default(uuid())
+  name       String    @unique @db.VarChar(128)
+  framework  Framework
+  sourcePath String    @db.VarChar(512)
+  config     Json?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  runs      TestRun[]
+  schedules ExecutionSchedule[]
+  matrixId  String?
+  matrix    EnvironmentMatrix? @relation(fields: [matrixId], references: [id])
+}
+
+model TestRun {
+  id            String             @id @default(uuid())
+  suiteId       String
+  suite         TestSuite          @relation(fields: [suiteId], references: [id], onDelete: Cascade)
+  environmentId String?
+  environment   EnvironmentConfig? @relation(fields: [environmentId], references: [id])
+  status        RunStatus          @default(queued)
+  workerId      String?
+  startedAt     DateTime?
+  completedAt   DateTime?
+  totalTests    Int                @default(0)
+  passedTests   Int                @default(0)
+  failedTests   Int                @default(0)
+  skippedTests  Int                @default(0)
+  duration      Int?
+  failureReason String?
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+
+  results TestResult[]
+
+  @@index([suiteId, status])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model TestResult {
+  id           String     @id @default(uuid())
+  runId        String
+  run          TestRun    @relation(fields: [runId], references: [id], onDelete: Cascade)
+  testName     String
+  status       TestStatus
+  duration     Int
+  errorMessage String?
+  errorStack   String?
+  createdAt    DateTime   @default(now())
+
+  @@index([runId])
+  @@index([testName, createdAt])
+  @@index([createdAt])
+}
+
+model EnvironmentConfig {
+  id             String   @id @default(uuid())
+  browser        String?
+  os             String?
+  runtimeVersion String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  runs     TestRun[]
+  matrices EnvironmentMatrixEntry[]
+}
+
+model EnvironmentMatrix {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  entries EnvironmentMatrixEntry[]
+  suites  TestSuite[]
+}
+
+model EnvironmentMatrixEntry {
+  matrixId      String
+  matrix        EnvironmentMatrix @relation(fields: [matrixId], references: [id], onDelete: Cascade)
+  environmentId String
+  environment   EnvironmentConfig @relation(fields: [environmentId], references: [id])
+
+  @@id([matrixId, environmentId])
+}
+
+model ExecutionSchedule {
+  id              String       @id @default(uuid())
+  suiteId         String
+  suite           TestSuite    @relation(fields: [suiteId], references: [id])
+  type            ScheduleType
+  cronExpression  String?
+  webhookPattern  String?
+  matrixId        String?
+  active          Boolean      @default(true)
+  lastTriggeredAt DateTime?
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  @@index([active])
+}
+
+model FlakyTestEntry {
+  id          String   @id @default(uuid())
+  testName    String
+  suiteId     String
+  score       Float
+  isFlaky     Boolean  @default(false)
+  lastUpdated DateTime @default(now())
+
+  @@unique([testName, suiteId])
+  @@index([isFlaky, score])
+}
+
+model NotificationChannel {
+  id        String      @id @default(uuid())
+  name      String
+  type      ChannelType
+  url       String
+  events    String[]
+  active    Boolean     @default(true)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  deliveries NotificationDelivery[]
+}
+
+model NotificationDelivery {
+  id        String         @id @default(uuid())
+  channelId String
+  channel   NotificationChannel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  event     String
+  payload   Json
+  status    DeliveryStatus
+  attempts  Int            @default(0)
+  lastError String?
+  createdAt DateTime       @default(now())
+
+  @@index([channelId, createdAt])
+}
